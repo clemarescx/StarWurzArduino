@@ -8,72 +8,65 @@
 
 class State_Game : public IState
 {
-  public:
-    State_Game(Adafruit_ST7735 *tft) : IState(tft) {}
-    ~State_Game() {}
-    void enter()override;
-    IState *execute(byte input)override;
-    void exit()override;
+public:
+  State_Game(Adafruit_ST7735 *tft) : IState(tft) {}
+  ~State_Game()
+  {
+    delete[] enemies;
+    delete[] levelData;
+  }
+  void enter() override;
+  IState *execute(byte input) override;
+  void exit() override;
 
-  private:
-    unsigned long timerStart;
-    int highestScore = 0;
-    int currentScore = 0;
-    byte currentHealth = 3;
-    byte currentLevel = 1;
-    int gameSpeed = 1000; //enemies move every 10 frame
-    
-    byte waveIndex = 0;
-    byte maxWaveCount;
-    byte *levelData;
+private:
+  unsigned long timerStart;
+  int highestScore = 0;
+  int currentScore = 0;
+  byte currentHealth = 3;
+  byte currentLevel = 1;
+  byte currentWaveEnemyCount = 0;
+  int gameSpeed = 2; //enemies move every 10 frame
 
-    Point* enemyPositions;
-    struct
-    {
-        Point center;
-        Point body_nose;
-        Point body_back_left;
-        Point body_back_right;
-        Point wing_joint_left;
-        Point wing_joint_right;
-        Point wing_tip_left;
-        Point wing_tip_right;
-        Point gun_tip_left;
-        Point gun_tip_right;
-    } playership;
+  byte waveIndex = 0;
+  byte *levelData;
 
-    struct EnemyShip{
-      Point center;
-      Point body_back_left;
-      Point body_back_right;
-      Point body_nose;
-      Point gun_tip_left;
-      Point gun_tip_right;
-    } enemy;
+  struct Ship
+  {
+    Point center;
+    Point old_pos;
+  };
 
-    void updateEnemyPositions();
-    void loadLevel(const byte lvl);
-    Point* parseWaveToEnemyStartingPos(byte wave);
-    void printHealth(const byte health) const;
-    void printGUI();
+  Ship playership;
+  Ship *enemies;
 
-    void moveShipX(int offset);
+  void loadLevel(const byte lvl);
+  byte getEnemyCount(byte wave);
+  void loadWave(byte wave);
+  void printHealth(const byte health) const;
+  void printGUI();
 
-    void updateShipPos(const Point &pos);
-    void drawTriangle(Point &p1, Point &p2, Point &p3, uint16_t color);
+  void moveShipX(int offset);
 
-    void drawLine(Point &p1, Point &p2, uint16_t color);
-    void drawFastHLine(Point &p, uint8_t len, uint16_t color);
+  void updateShipPos(const Point &pos);
+  void drawTriangle(const Point &p1, const Point &p2, const Point &p3, uint16_t color);
 
-    void drawFastVLine(Point &p, uint8_t len, uint16_t color);
-    void drawShip(uint16_t color);
+  void drawLine(const Point &p1, const Point &p2, uint16_t color);
+  void drawFastHLine(const Point &p, uint8_t len, uint16_t color);
 
-    void moveShip(const Point &newPos);
+  void drawFastVLine(const Point &p, uint8_t len, uint16_t color);
+  void drawPlayerShip(uint16_t color);
+  void drawPlayerShip(const Point &pos, uint16_t color);
+  typedef void (State_Game::*shipFunction)(Ship &);
+  void forAllEnemies(shipFunction f);
+  void drawEnemies();
+  void drawEnemy(const Point &pos, uint16_t color);
+  void clearAndDrawEnemy(Ship &ship);
+  void updateEnemyPositions();
+  void updatePosition(Ship &ship);
 };
 
 #endif
-
-
 
 
 

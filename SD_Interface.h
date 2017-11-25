@@ -8,21 +8,8 @@
 
 namespace SD_Interface
 {
-static byte level1[4] = {
-    0x01,
-    0x18,
-    0x81,
-    0b00100100
-};
-static byte level2[4] = {
-    0xFF,
-    0xE7,
-    0xC5,
-    0b01100110
-};
-static byte levels[][4] = {{level1}, {level2}};
-static bool
-initCard()
+
+static bool initCard()
 {
     return SD.begin(SD_CS);
 }
@@ -71,32 +58,30 @@ static bool loadScores(int *out_scores, int &scorecount)
     return false;
 }
 
-static bool loadLevel(int levelNum, byte *out_level, byte& maxWaveCount)
+static bool loadLevel(int levelNum, byte out_level[], byte maxWaveCount)
 {
-    maxWaveCount = 4;
-    out_level = levels[levelNum - 1];
+    byte levels[2][4] = {
+        {
+            0xff,
+            0x18,
+            0x81,
+            0x24,
+        },
+        {
+            0xFF,
+            0xE7,
+            0xC5,
+            0b01100110,
+        }};
+    Serial.println("Level loaded: ");
+    for (int i = 0; i < maxWaveCount; i++)
+    {
+        out_level[i] = levels[levelNum - 1][i];
+        Serial.println(out_level[i]);
+    }
     return true;
 }
 }
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
