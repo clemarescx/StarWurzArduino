@@ -1,0 +1,5 @@
+14758
+14752 with tft.fillRect(gameWindow.x0, gameWindow.y0, tft.width(), tft.width(), ST7735_BLACK);
+14718 without
+
+diff: 34
