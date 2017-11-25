@@ -36,7 +36,8 @@ IState *State_Game::execute(byte input)
         moveShipX(5);
     }
     // update enemies position: move enemies down every gameSpeed tick
-    if (millis()-timerStart >= gameSpeed){
+    if (millis() - timerStart >= gameSpeed)
+    {
         timerStart = millis();
         updateEnemyPositions();
     }
@@ -67,10 +68,11 @@ void State_Game::exit()
     delay(3000);
 }
 
-void State_Game::updateEnemyPositions(){
-    for (int i = 0; i < 8;  i++)
+void State_Game::updateEnemyPositions()
+{
+    for (int i = 0; i < 8; i++)
     {
-        if(enemyPositions[i].y != 0)
+        if (enemyPositions[i].y != 0)
             enemyPositions[i].y += 5;
     }
 }
@@ -86,7 +88,7 @@ void State_Game::loadLevel(const byte lvl)
 
 Point *State_Game::parseWaveToEnemyStartingPos(byte wave)
 {
-    Point* enemies = new Point[8];
+    Point *enemies = new Point[8];
     byte _wave = wave;
     byte bitIndex = 0;
     while (_wave)
@@ -133,23 +135,38 @@ void State_Game::moveShipX(const int offset)
 
 void State_Game::updateShipPos(const Point &pos)
 {
-
     playership.center = pos;
-    playership.body_nose = {pos.x, pos.y - 10};
-    playership.body_back_left = {pos.x - 5, pos.y + 10};
-    playership.body_back_right = {pos.x + 5, pos.y + 10};
-    playership.wing_joint_left = {pos.x - 2, pos.y};
-    playership.wing_joint_right = {pos.x + 2, pos.y};
-    playership.wing_tip_left = {pos.x - centerToWingTipOffset, pos.y + 10};
-    playership.wing_tip_right = {pos.x + centerToWingTipOffset, pos.y + 10};
+    playership.body_nose = {playership.center.x, playership.center.y - 10};
+    playership.body_back_left = {playership.center.x - 5, playership.center.y + 10};
+    playership.body_back_right = {playership.center.x + 5, playership.center.y + 10};
+    playership.wing_joint_left = {playership.center.x - 2, playership.center.y};
+    playership.wing_joint_right = {playership.center.x + 2, playership.center.y};
+    playership.wing_tip_left = {playership.center.x - centerToWingTipOffset, playership.center.y + 10};
+    playership.wing_tip_right = {playership.center.x + centerToWingTipOffset, playership.center.y + 10};
     playership.gun_tip_left = {
-        playership.wing_tip_left.x,
-        playership.wing_tip_left.y - 5,
+        playership.center.x - centerToWingTipOffset,
+        playership.center.y + 5,
     };
     playership.gun_tip_right = {
-        playership.wing_tip_right.x,
-        playership.wing_tip_right.y - 5,
+        playership.center.x + centerToWingTipOffset,
+        playership.center.y + 5,
     };
+}
+
+
+void State_Game::drawShip(uint16_t color)
+{
+    //Body
+    drawTriangle(playership.body_nose, playership.body_back_left, playership.body_back_right, color);
+    //left side
+    drawLine(playership.wing_joint_left, playership.wing_tip_left, color);
+    drawFastHLine(playership.wing_tip_left, 10, color);
+    drawFastVLine(playership.gun_tip_left, 5, color);
+
+    // right side
+    drawLine(playership.wing_joint_right, playership.wing_tip_right, color);
+    drawFastHLine(playership.body_back_right, 10, color);
+    drawFastVLine(playership.gun_tip_right, 5, color);
 }
 
 void State_Game::drawTriangle(Point &p1, Point &p2, Point &p3, uint16_t color)
@@ -172,28 +189,12 @@ void State_Game::drawFastVLine(Point &p, uint8_t len, uint16_t color)
     tft->drawFastVLine(p.x, p.y, len, color);
 }
 
-void State_Game::drawShip(uint16_t color)
-{
-    //Body
-    drawTriangle(playership.body_nose, playership.body_back_left, playership.body_back_right, color);
-    //left side
-    drawLine(playership.wing_joint_left, playership.wing_tip_left, color);
-    drawFastHLine(playership.wing_tip_left, 10, color);
-    drawFastVLine(playership.gun_tip_left, 5, color);
-
-    // right side
-    drawLine(playership.wing_joint_right, playership.wing_tip_right, color);
-    drawFastHLine(playership.body_back_right, 10, color);
-    drawFastVLine(playership.gun_tip_right, 5, color);
-}
-
 void State_Game::moveShip(const Point &newPos)
 {
     drawShip(BG_COLOR);
     updateShipPos(newPos);
     drawShip(SHIP_COLOR);
 }
-
 
 
 
