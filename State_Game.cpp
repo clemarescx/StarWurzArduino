@@ -15,7 +15,6 @@ void State_Game::setGameVariables()
 
 void State_Game::enter()
 {
-    Serial.println("Enter game.");
     setGameVariables();
     printGUI();
     loadLevel(levelIndex);
@@ -66,14 +65,12 @@ IState *State_Game::execute(byte input)
             }
             else
             {
-                Serial.println("Load next level");
                 loadLevel(levelIndex);
                 resetLevel();
             }
         }
         else
         {
-            Serial.println("Load next wave");
             loadWave(levelData[waveIndex]);
             clearGameScreen();
             drawPlayerShip(SHIP_COLOR);
@@ -90,7 +87,6 @@ IState *State_Game::execute(byte input)
 }
 void State_Game::exit()
 {
-    Serial.println("Exit game...");
     tft->fillScreen(ST7735_BLACK);
     tft->setCursor(10, 30);
     tft->setTextColor(ST7735_WHITE);
@@ -190,7 +186,6 @@ void State_Game::drawEnemies()
 
 void State_Game::updateLives(int update)
 {
-    Serial.println("One life lost");
     printLives(lives, ST7735_BLACK);
     lives += update;
     printLives(lives, ST7735_GREEN);
@@ -218,10 +213,10 @@ void State_Game::loadLevel(const byte lvlIndex)
 {
     delete[] levelData;
     levelData = new byte[numberOfWaves];
-    SD_Interface::loadLevel(int(lvlIndex), levelData);
+    SD_Interface::loadLevel(lvlIndex, levelData);
     // Serial.print("Load level ");
-    // Serial.print(lvlIndex);
-    Serial.println(" from State_Game: ");
+    // Serial.println(lvlIndex);
+    Serial.println("From State_Game: ");
     for (int i = 0; i < numberOfWaves; i++)
     {
         Serial.println(levelData[i]);
@@ -231,10 +226,10 @@ void State_Game::loadLevel(const byte lvlIndex)
 
 void State_Game::loadWave(byte wave)
 {
-    Serial.print("Load wave ");
-    Serial.println(waveIndex);
-    Serial.print("Wave loaded: ");
-    Serial.println(wave);
+    // Serial.print("Load wave ");
+    // Serial.println(waveIndex);
+    // Serial.print("Wave loaded: ");
+    // Serial.println(wave);
     enemyCount = getEnemyCount(wave);
     delete[] enemies;
     enemies = new Ship[enemyCount];
@@ -401,6 +396,27 @@ void State_Game::clearGameScreen() const
 {
     tft->fillRect(GameWindow::x0, GameWindow::y0, GameWindow::xMax, GameWindow::xMax, ST7735_BLACK);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

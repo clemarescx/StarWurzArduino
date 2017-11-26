@@ -5,11 +5,8 @@
 
 void State_Menu::enter()
 {
-    Serial.println("Enter menu.");
-    // clear whole screen
     tft->fillScreen(ST7735_BLACK);
-
-    // print options
+    // print options and select 1st
     printTitleScreen();
     selectItem(0);
 }
@@ -45,8 +42,6 @@ IState *State_Menu::execute(byte input)
 
 void State_Menu::exit()
 {
-    tft->fillScreen(ST7735_BLACK);
-    Serial.println("Leaving menu...");
 }
 
 void State_Menu::selectItem(byte itemIndex)
@@ -74,6 +69,27 @@ void State_Menu::printTitleScreen()
     tft->setCursor(50, 70);
     tft->println("scores");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

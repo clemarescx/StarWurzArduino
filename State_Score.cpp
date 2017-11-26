@@ -4,8 +4,8 @@
 #include "SD_Interface.h"
 
 void State_Score::enter()
-{
-    Serial.println("Entering score.");
+{    
+    tft->fillScreen(ST7735_BLACK);
     byte scoreCount = 4;
     int scores[4];
     if (SD_Interface::loadScores(scores, scoreCount))
@@ -21,10 +21,9 @@ IState *State_Score::execute(byte input)
         return new State_Menu(tft);
     }
 }
-void State_Score::exit()
-{
-    Serial.println("Leaving score...");
+void State_Score::exit(){    
 }
+
 void State_Score::printScores(int *scores, int count)
 {
     tft->setCursor(5, 20);
@@ -41,6 +40,27 @@ void State_Score::printScores(int *scores, int count)
         tft->print(scores[i]);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

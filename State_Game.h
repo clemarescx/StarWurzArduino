@@ -96,11 +96,32 @@ private:
     String x = String(ship.center.x);
     String y = String(ship.center.y);
     coords += x + "," + y + "]";
-    Serial.println(coords);
+    // Serial.println(coords);
   }
 };
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
