@@ -11,29 +11,11 @@
 class GameFSM
 {
   public:
-    GameFSM(Adafruit_ST7735 *tft)
-    {
-        inputManager = InputManager();
-        currentState = new State_Menu(tft);
-    }
-    void init()
-    {
-        currentState->enter();
-    }
-    void update()
-    {
-        byte input = inputManager.pollForInput();
-        IState *newState = currentState->execute(input);
-        if (newState != currentState)
-        {
-            input = 0;
-            delay(200); // delay to let fire button go back to unpressed state 
-            currentState->exit();
-            delete currentState;
-            newState->enter();
-        }
-        currentState = newState;
-    }
+    GameFSM(Adafruit_ST7735 *tft);
+    ~GameFSM();
+
+    void init();
+    void update();
 
   private:
     IState *currentState;
@@ -41,82 +23,6 @@ class GameFSM
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

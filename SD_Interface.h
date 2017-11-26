@@ -4,25 +4,15 @@
 #include <SPI.h>
 #include <SD.h>
 
-#define SD_CS 4
 
 namespace SD_Interface
 {
 
-static bool initCard()
-{
-    return SD.begin(SD_CS);
-}
 
-static bool exists(String &filepath)
-{
-    return SD.exists(filepath);
-}
 
-static bool loadScores(int *out_scores, int &scorecount)
+static bool loadScores(int *out_scores, byte scorecount)
 {
-    const String scorefilepath = "scores.txt";
-    File scores = SD.open(scorefilepath);
+    File scores = SD.open("scores.txt");
     if (scores)
     {
         int index = 0;
@@ -45,9 +35,7 @@ static bool loadScores(int *out_scores, int &scorecount)
         if (buffer != "" && index < scorecount)
         {
             out_scores[index] = buffer.toInt();
-            scorecount = index + 1;
         }
-
         scores.close();
         return true;
     }
@@ -58,30 +46,125 @@ static bool loadScores(int *out_scores, int &scorecount)
     return false;
 }
 
-static bool loadLevel(int levelNum, byte out_level[], byte maxWaveCount)
+static byte getLevelCount()
 {
-    byte levels[2][4] = {
-        {
-            0xff,
-            0x18,
-            0x81,
-            0x24,
-        },
-        {
-            0xFF,
-            0xE7,
-            0xC5,
-            0b01100110,
-        }};
-    Serial.println("Level loaded: ");
-    for (int i = 0; i < maxWaveCount; i++)
+    byte levelCount = 0;
+    File levelDir = SD.open("levels/");
+    if (levelDir)
     {
-        out_level[i] = levels[levelNum - 1][i];
+        while (true)
+        {
+            File f = levelDir.openNextFile();
+            if (!f)
+                break;
+            levelCount++;
+        }
+    }
+    else
+    {
+        Serial.println("Could not open 'levels/'");
+    }
+    Serial.print("Found ");
+    Serial.print(int(levelCount));
+    Serial.println(" levels");
+    levelDir.close();
+    return levelCount;
+}
+
+static byte parseToByte(String& str){
+    byte res = 0;
+    for (int i=0; i <8; i++)
+    {
+        if(str.charAt(i)=='1')
+        {res |=0x01;
+                }
+        res <<= 1;
+        }
+        return res;
+}
+
+static bool loadLevel(int levelIndex, byte out_level[])
+{
+    if(SD.exists("levels/")){
+        Serial.println("found levels/");
+    } else{
+        Serial.println("levels/ not found");        
+    }
+    String filepath = String("/levels/");
+    filepath.concat(levelIndex + 1);
+    filepath.concat(".txt");
+    File level = SD.open(filepath.c_str());
+    String buffer = "";
+    if (level)
+    {
+        int index = 0;            
+        while (level.available())
+        {
+            char c = level.read();
+            if(isDigit(c))
+            buffer += (char)c;
+
+            if (c == '\0' || c == '\n')
+            {
+                byte lvl = parseToByte(buffer);
+                out_level[index] = lvl;
+                index++;
+                buffer = "";
+            }
+        }
+        //buffer.getBytes(out_level, buffer.length());
+    }
+    else
+    {
+        Serial.print("Could not load ");
+        Serial.println(filepath.c_str());
+    }
+    level.close();
+    // byte levels[2][4] = {
+    //     {
+    //         0b11110000,
+    //         0b00011000,
+    //         0b10000001,
+    //         0b11000011,
+    //     },
+    //     {
+    //         0b11000000,
+    //         0b01100000,
+    //         0b00110000,
+    //         0b00011000,
+    //     }};
+
+    Serial.println("Level loaded: ");
+    for (int i = 0; i < buffer.length(); i++)
+    {
+        
         Serial.println(out_level[i]);
     }
     return true;
 }
 }
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

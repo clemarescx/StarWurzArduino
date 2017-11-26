@@ -3,11 +3,12 @@
 #include "State_Score.h"
 #include "InputValues.h"
 
-void State_Menu::enter() 
+void State_Menu::enter()
 {
+    Serial.println("Enter menu.");
     // clear whole screen
     tft->fillScreen(ST7735_BLACK);
-    
+
     // print options
     printTitleScreen();
     selectItem(0);
@@ -15,17 +16,8 @@ void State_Menu::enter()
 
 IState *State_Menu::execute(byte input)
 {
-    if (input & TS_FIRE)
-    {
-        switch (selectedItem)
-        {
-        case 0:
-            return new State_Game(tft);
-        case 1:
-            return new State_Score(tft);
-        }
-    }
 
+    // change selection caret according to input
     if (input & TS_UP)
     {
         if (selectedItem != 0)
@@ -36,14 +28,25 @@ IState *State_Menu::execute(byte input)
         if (selectedItem != 1)
             selectItem(1);
     }
-    // change selection caret according to input
+
+    // switch to selected item with fire
+    if (input & TS_FIRE)
+    {
+        switch (selectedItem)
+        {
+        case 0:
+            return new State_Game(tft);
+        case 1:
+            return new State_Score(tft);
+        }
+    }
     return this;
 }
 
 void State_Menu::exit()
 {
-    // animation?
     tft->fillScreen(ST7735_BLACK);
+    Serial.println("Leaving menu...");
 }
 
 void State_Menu::selectItem(byte itemIndex)
@@ -71,127 +74,6 @@ void State_Menu::printTitleScreen()
     tft->setCursor(50, 70);
     tft->println("scores");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
