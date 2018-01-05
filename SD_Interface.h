@@ -68,7 +68,7 @@ static byte getLevelCount()
   levelDir.close();
   return levelCount;
 }
-
+/*
 static byte parseToByte(String& str) {
   byte res = 0;
   for (int i = 0; i < 8; i++)
@@ -83,7 +83,7 @@ static byte parseToByte(String& str) {
   }
   return res;
 }
-
+*/
 static bool loadLevel(int levelIndex, byte out_level[])
 {
   /*if (SD.exists("levels/")) {
@@ -126,8 +126,6 @@ static bool loadLevel(int levelIndex, byte out_level[])
   else*/
   {
     Serial.print("Could not load from card.");
-    // Serial.println(filepath.c_str());
-    // Serial.println("Loading hardcoded values instead: ");
     byte levels[2][4] = {
       {
         0b11110000, //240
