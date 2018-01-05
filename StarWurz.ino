@@ -4,6 +4,11 @@
 #include "Utils.h"
 #include "SD_Interface.h"
 #include "GameFSM.h"
+/**
+ * This is an unfinished version of  Star Wurz, a shoot-them-up game on arduino. The goal is to avoid incoming ships by moving your ship laterally. Uses a Finite State Machine to switch between Menu, Scoreboard and Game. 
+Program space: 24516 bytes out of 32256 available (76%)
+Dynamic memory: 1328 bytes out of 2048 available (64%)
+ */
 
 #define TFT_CS 10
 #define TFT_RST 8 
